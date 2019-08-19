@@ -1,0 +1,9 @@
+{% extends "conlang/base.html" %}
+{% block content %}
+  <h2> Conlangs </h2>
+  <ul>
+	  {% for conlang in object_list %}
+	  <li> {{ conlang.name }} </li>
+	  {% endfor %}
+  </ul>
+{% endblock %}

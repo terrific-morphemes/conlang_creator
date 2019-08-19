@@ -1,0 +1,9 @@
+{% extends "conlang/base.html" %}
+{% block content %}
+  <h2> Onset Phonemes </h2>
+  <ul>
+	  {% for phoneme in object_list %}
+	  <li> {{ phoneme.arpa }} </li>
+	  {% endfor %}
+  </ul>
+{% endblock %}

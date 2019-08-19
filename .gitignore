@@ -1,0 +1,16 @@
+*.pyc
+virtualenv/
+migrations
+venv/
+*.sqlite3
+*.idea
+.DS_STORE
+node_modules
+*~
+build/
+remote-repo/
+coverage/
+.module-cache
+*.log*
+*.swo
+*.swp

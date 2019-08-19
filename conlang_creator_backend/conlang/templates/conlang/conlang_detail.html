@@ -1,0 +1,16 @@
+{% extends 'conlang/base.html' %}
+{% block content %}
+<h3>Name: {{ conlang.name }}</h3>
+<h3> Completed: {{ conlang.completed }} </h3>
+<h3> Word Order: {{ conlang.word_order }} </h3>
+<h3> Fusion Level: {{ conlang.fusion_level }} </h3>
+<h3> Exponence Level: {{conlang.exponence_level }} </h3>
+<h3> Flexivity Level: {{conlang.flexivity_level }} </h3>
+
+<h3> Lemmata: </h3>
+<ol>
+{% for l in lemmata %}
+<li> {{l.root}}: {{l.meaning}} ({{ l.pos }}) </li>
+{% endfor %}
+</ol>
+{% endblock %}

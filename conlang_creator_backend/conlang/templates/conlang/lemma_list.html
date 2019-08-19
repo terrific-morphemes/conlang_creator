@@ -1,0 +1,9 @@
+{% extends "conlang/base.html" %}
+{% block content %}
+  <h2> Lemmata </h2>
+  <ul>
+	  {% for lemma in object_list %}
+	  <li> {{ lemma.meaning }} {{ lemma.root }}</li>
+	  {% endfor %}
+  </ul>
+{% endblock %}
