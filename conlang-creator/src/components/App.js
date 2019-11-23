@@ -1,9 +1,9 @@
 // https://scotch.io/tutorials/build-a-to-do-application-using-django-and-react
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import logo from '../resources/logo.svg';
+import '../styles/App.css';
 import { Button } from 'reactstrap';
-import Modal from "./components/Modal";
+import Modal from "./Modal";
 const conlangItems = [
  {
 	 id: 1,
