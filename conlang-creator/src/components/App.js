@@ -1,4 +1,6 @@
 import React, {useState, useEffect} from 'react';
+import InputGroup from 'react-bootstrap/InputGroup'
+import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
 import Dropdown from 'react-bootstrap/Dropdown'
@@ -27,18 +29,65 @@ function PhonemePicker(props){
 
 function ParameterReport(props){
   let conlangParams = props.conlangParams
-  console.log(conlangParams)
   const paramsList = Object.entries(props.conlangParams).map(([param, setting]) => {
-          console.log(param, setting)
-          return(<li key={param}>{param}: {setting}</li>)
+          return(<li key={param}>{param}: {setting === true || setting === false ? setting.toString() : setting}</li>)
    })
   return(
     <ul className="paramsList">{paramsList}</ul>
   )
 }
 
+function ParameterForm(props){
+  let parameters = props.parameters
+  let conlangParams = props.conlangParams
+  const paramsMenu = parameters.map(parameter => {
+    let labelName = parameter['attribute'] + '-label'
+    let parameterName = parameter['attribute']
+    let parameterSettings = parameter['setting']
+    let parameterDisplayName = parameter['display']
+    if (parameterSettings.includes("number")){
+      return(<Form.Group controlId={parameterName}>
+               <Form.Label>{parameterDisplayName}</Form.Label>
+               <Form.Control type="number" onChange={props.handleChange} value={conlangParams[parameterName]}/>
+             </Form.Group>
+      )
+      }else if(parameterSettings.includes("bool")) {
+         return(<Form.Group controlId={parameterName}>
+                  <Form.Check 
+                      type="checkbox" 
+                      label={parameterDisplayName} 
+                      onChange={props.handleChange} 
+                      checked={(conlangParams[parameterName] === true)}/>
+                </Form.Group>
+         )
+      } else {
+         let settingButtons = parameterSettings.map(setting => {
+           return(
+             <Form.Check 
+                  type="radio" 
+                  label={setting} 
+                  value={setting}
+                  name={parameterName} 
+                  onChange={props.handleChange} 
+                  checked={(conlangParams[parameterName] === setting)}/>
+           )
+         })
+         return(
+           <Form.Group controlId={parameterName}>
+             <Form.Label>{parameterDisplayName}</Form.Label>
+             {settingButtons}
+           </Form.Group>
+         )}
+    })
+    return(
+      <Form className="conlangParams" onSubmit={props.handleSubmit}>
+        {paramsMenu}
+        <Button type="submit">Update</Button>
+      </Form>
+    )
+}
+
 function ParameterPicker(props){
-  const classes = useStyles()
   const parameters = props.parameters
   const paramsMenu = parameters.map(parameter => {
     let labelName = parameter['attribute'] + '-label'
@@ -51,19 +100,25 @@ function ParameterPicker(props){
           {setting}
         </Dropdown.Item>
       )})
-    return (<DropdownButton key={parameterDisplayName} className="parameterSetting" title={parameterDisplayName}>{settingButtons}</DropdownButton>)
+    return (
+          <DropdownButton 
+             key={parameterDisplayName} 
+             className="parameterSetting" 
+             title={parameterDisplayName}>
+               {settingButtons}
+          </DropdownButton>
+    )
     })
     return(
       <ButtonToolbar className="conlangParams">
         {paramsMenu}
       </ButtonToolbar>
     )
-  }
+}
 
 
 function App(props){
   const [conlangParams, setConlangParams] = useState({})
-  
 
   const clearParams = () => {
     let emptyParams = {}
@@ -75,19 +130,37 @@ function App(props){
     })})
   }
 
+  useEffect(() => {randomParams()}, [])
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+  }
+
+  const handleChange = (e) => {
+    const {id, value, type} = e.target
+    if (type === "checkbox") {
+      setConlangParams((prevParams) => {return {...prevParams,[id]:!prevParams[id]}})
+    } else if (type === "radio") {
+       setConlangParams((prevParams) => {return {...prevParams, [id]:value}})
+    } else {
+      setConlangParams((prevParams) => {return {...prevParams, [id]:value}})
+    }
+ }
+
   const handleUpdateParams = (e) => {
     let {name, value} = e.target
     setConlangParams(prevParams => {return {
          ...prevParams,
          [name]:value}})
-    console.log(conlangParams)
   }
 
   const randomParams = (e) => {
-    console.log('setting random params')
     parameters['parameters'].map((parameter) => {
        let parameterName = parameter['attribute']
        let options = parameter['setting']
+       if (options.includes("bool")){options = [true, false]}
+       else if (options.includes("number")){options = [1,2,3]}
+       console.log(parameterName, options)
        let randomChoice = options[Math.floor(Math.random() * options.length)]
        setConlangParams(prevParams=>{return{...prevParams, [parameterName]:randomChoice}})
     })
@@ -107,11 +180,26 @@ function App(props){
         <h2>Language settings</h2>
         <Button className='randomButton' onClick={randomParams}>Random settings</Button>
         <Button onClick={clearParams}>Clear settings</Button>
-        <ParameterPicker handleUpdateParams={handleUpdateParams} parameters={parameters['parameters']}/>
+        
+        {Object.keys(conlangParams).length === 0 ? <p>No params</p> : 
+           <div className="parameterDiv">
+           <div className="formDiv">
+           <ParameterForm 
+             handleChange={handleChange} 
+             handleSubmit={handleSubmit} 
+             parameters={parameters['parameters']}
+             conlangParams={conlangParams}
+           />
+           </div>
+           <div className="reportDiv">
+              <h4>Conlang Parameters</h4>
+              <ParameterReport conlangParams={conlangParams}/>
+           </div>
+          </div>
+       }
       </div>
       <div className="phonologyContainer">
       </div>
-        {Object.keys(conlangParams).length === 0 ? <p>No params</p> : <div>params<ParameterReport conlangParams={conlangParams}/></div>}
     </div>  
 )
 }

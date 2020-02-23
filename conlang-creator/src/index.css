@@ -3,10 +3,21 @@ body {
   display: flex;
 }
 
-
+.parameterDiv{
+  display: flex;
+  flex-direction: row;
+}
 .randomButton{
   color: green;
   margin: 0rem 1rem 1rem 1rem;
+}
+.reportDiv, .formDiv{
+  width:50%;
+}
+
+.formDiv {
+  border: solid;
+  padding: 1rem;
 }
 
 .topArea{
@@ -22,6 +33,5 @@ width:1000px;
 }
 
 .conlangParams {
-  background-color: lightblue;
   justify-content: space-between;
 }
