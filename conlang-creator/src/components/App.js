@@ -1,4 +1,6 @@
 import React, {useState, useEffect} from 'react';
+import Button from 'react-bootstrap/Button'
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
 import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import {makeStyles} from '@material-ui/core/styles'
@@ -23,6 +25,18 @@ const useStyles = makeStyles(theme=> ({
 function PhonemePicker(props){
 }
 
+function ParameterReport(props){
+  let conlangParams = props.conlangParams
+  console.log(conlangParams)
+  const paramsList = Object.entries(props.conlangParams).map(([param, setting]) => {
+          console.log(param, setting)
+          return(<li key={param}>{param}: {setting}</li>)
+   })
+  return(
+    <ul className="paramsList">{paramsList}</ul>
+  )
+}
+
 function ParameterPicker(props){
   const classes = useStyles()
   const parameters = props.parameters
@@ -40,9 +54,9 @@ function ParameterPicker(props){
     return (<DropdownButton key={parameterDisplayName} className="parameterSetting" title={parameterDisplayName}>{settingButtons}</DropdownButton>)
     })
     return(
-      <div className="container">
+      <ButtonToolbar className="conlangParams">
         {paramsMenu}
-      </div>
+      </ButtonToolbar>
     )
   }
 
@@ -50,13 +64,33 @@ function ParameterPicker(props){
 function App(props){
   const [conlangParams, setConlangParams] = useState({})
   
+
+  const clearParams = () => {
+    let emptyParams = {}
+    parameters['parameters'].map(parameter => {
+      setConlangParams(prevParams => {return{
+         ...prevParams,
+         [parameter['attribute']]: ''
+       }
+    })})
+  }
+
   const handleUpdateParams = (e) => {
-    console.log('old params', conlangParams)
     let {name, value} = e.target
-    let oldParams = conlangParams
-    oldParams[name] = value
-    setConlangParams(oldParams)
-    console.log('new params', conlangParams)
+    setConlangParams(prevParams => {return {
+         ...prevParams,
+         [name]:value}})
+    console.log(conlangParams)
+  }
+
+  const randomParams = (e) => {
+    console.log('setting random params')
+    parameters['parameters'].map((parameter) => {
+       let parameterName = parameter['attribute']
+       let options = parameter['setting']
+       let randomChoice = options[Math.floor(Math.random() * options.length)]
+       setConlangParams(prevParams=>{return{...prevParams, [parameterName]:randomChoice}})
+    })
   }
 
   //console.log(parameters)
@@ -69,7 +103,15 @@ function App(props){
         </div>
         <div className="topNav"></div>
       </div>
-      <ParameterPicker handleUpdateParams={handleUpdateParams} parameters={parameters['parameters']}/>
+      <div className="parameterContainer">
+        <h2>Language settings</h2>
+        <Button className='randomButton' onClick={randomParams}>Random settings</Button>
+        <Button onClick={clearParams}>Clear settings</Button>
+        <ParameterPicker handleUpdateParams={handleUpdateParams} parameters={parameters['parameters']}/>
+      </div>
+      <div className="phonologyContainer">
+      </div>
+        {Object.keys(conlangParams).length === 0 ? <p>No params</p> : <div>params<ParameterReport conlangParams={conlangParams}/></div>}
     </div>  
 )
 }

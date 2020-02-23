@@ -3,6 +3,12 @@ body {
   display: flex;
 }
 
+
+.randomButton{
+  color: green;
+  margin: 0rem 1rem 1rem 1rem;
+}
+
 .topArea{
 width:1000px;
 }
@@ -12,5 +18,10 @@ width:1000px;
 }
 
 .parameterSetting {
-  margin: 0rem 0rem 1rem 0rem;
+  margin: 0rem 1rem 1rem 1rem;
+}
+
+.conlangParams {
+  background-color: lightblue;
+  justify-content: space-between;
 }
