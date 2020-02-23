@@ -33,11 +33,11 @@ function ParameterPicker(props){
     let parameterDisplayName = parameter['display']
     let settingButtons = parameterSettings.map(setting=>{
       return(
-        <Dropdown.Item as="button">
+        <Dropdown.Item key={setting} name={parameterName} value={setting} onClick={props.handleUpdateParams} as="button">
           {setting}
         </Dropdown.Item>
       )})
-    return (<DropdownButton className="parameterSetting" title={parameterDisplayName}>{settingButtons}</DropdownButton>)
+    return (<DropdownButton key={parameterDisplayName} className="parameterSetting" title={parameterDisplayName}>{settingButtons}</DropdownButton>)
     })
     return(
       <div className="container">
@@ -48,30 +48,28 @@ function ParameterPicker(props){
 
 
 function App(props){
-  const [wordOrder, setWordOrder] = useState("")
-  const [adpositions, setAdpositions] = useState(false)
-  const [nounClasses, setNounClasses] = useState(false)
-  const [verbTense, setVerbTense] = useState(false)
-  const [verbPerson, setVerbPerson] = useState(false)
-  const [copula, setCopula] = useState(false)
-  const [nounCase, setNounCase] = useState(false)
-  const [verbAspect, setVerbAspect] = useState(false)
-  const [verbMood, setVerbMood] = useState(false)
-  const [fusionLevel, setFusionLeve] = useState("")
-  const [flexivityLevel, setFlexivityLevel] = useState("")
-  const [exponenceLevel, setExponenceLevel] = useState("")
+  const [conlangParams, setConlangParams] = useState({})
+  
+  const handleUpdateParams = (e) => {
+    console.log('old params', conlangParams)
+    let {name, value} = e.target
+    let oldParams = conlangParams
+    oldParams[name] = value
+    setConlangParams(oldParams)
+    console.log('new params', conlangParams)
+  }
 
-  console.log(parameters)
+  //console.log(parameters)
   return(
     <div className="container">
       <div className="topArea">
         <div className="titleArea">
-          <h1 class="title">Conlang Creator</h1>
-          <p class="subtitle">construct a language, just for fun</p>
+          <h1 className="title">Conlang Creator</h1>
+          <p className="subtitle">construct a language, just for fun</p>
         </div>
         <div className="topNav"></div>
       </div>
-      <ParameterPicker parameters={parameters['parameters']}/>
+      <ParameterPicker handleUpdateParams={handleUpdateParams} parameters={parameters['parameters']}/>
     </div>  
 )
 }
