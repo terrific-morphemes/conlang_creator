@@ -12,6 +12,8 @@ from .utils import create_vocab
 
 
 def conlang_new(request):
+    """Create a new conlang
+    """
     if request.method == "POST":
         form = ConlangForm(request.POST)
         if form.is_valid():
