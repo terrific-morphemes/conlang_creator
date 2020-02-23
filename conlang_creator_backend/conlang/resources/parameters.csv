@@ -11,3 +11,4 @@
 "fusionLevel","Fusion Level","morphology","l,m,h",
 "flexivityLevel","Flexivity Level","morphology","l,m,h",
 "exponenceLevel","Exponence Level","morphology","l,m,h",
+"maxSylLen","Max Syllable Length","phonology","number",

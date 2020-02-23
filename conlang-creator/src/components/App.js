@@ -1,13 +1,29 @@
 import React, {useState, useEffect} from 'react';
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import Input from '@material-ui/core/Input'
 import InputGroup from 'react-bootstrap/InputGroup'
 import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
+//import Button from 'react-bootstrap/Button'
+import Table from '@material-ui/core/Table'
+import TableHead from '@material-ui/core/TableHead'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableContainer from '@material-ui/core/TableContainer'
+import TableFooter from '@material-ui/core/TableFooter'
+import TablePagination from '@material-ui/core/TablePagination'
+import TableRow from '@material-ui/core/TableRow'
+import Button from '@material-ui/core/Button'
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
+import Radio from '@material-ui/core/Radio'
+import RadioGroup from '@material-ui/core/RadioGroup'
 import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import {makeStyles} from '@material-ui/core/styles'
 import FormGroup from '@material-ui/core/FormGroup'
+import Checkbox from '@material-ui/core/Checkbox'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormLabel from '@material-ui/core/FormLabel'
 import FormControl from '@material-ui/core/FormControl'
 import TextField from '@material-ui/core/TextField'
 import InputLabel from '@material-ui/core/InputLabel'
@@ -18,7 +34,8 @@ import axios from 'axios'
 import logo from '../resources/logo.svg';
 import parameters from '../resources/parameters.json'
 import '../styles/App.css';
-import Table from 'react-bootstrap/Table'
+//import Table from 'react-bootstrap/Table'
+import Layout from './Layout'
 
 const useStyles = makeStyles(theme=> ({
   formControl: {
@@ -30,30 +47,32 @@ const useStyles = makeStyles(theme=> ({
 function VocabTable(props){
   const vocabRows = props.vocab.map(word => {
     return(
-      <tr>
-        <td>{word.meaning}</td>
-        <td>{word.lemma}</td>
-        <td>{word.pos}</td>
-        <td>{word.category}</td>
-      </tr>
+      <TableRow>
+        <TableCell>{word.meaning}</TableCell>
+        <TableCell>{word.lemma}</TableCell>
+        <TableCell>{word.pos}</TableCell>
+        <TableCell>{word.category}</TableCell>
+      </TableRow>
     )
   })
   return(
     <div className="vocabTable">
       <h4>Vocab</h4>
+      <TableContainer>
       <Table>
-        <thead>
-          <tr>
-            <th>Meaning</th>
-            <th>Lemma</th>
-            <th>Part of speech</th>
-            <th>Category</th>
-          </tr>
-        </thead>
-        <tbody>
+        <TableHead>
+          <TableRow>
+            <TableCell>Meaning</TableCell>
+            <TableCell>Lemma</TableCell>
+            <TableCell>Part of speech</TableCell>
+            <TableCell>Category</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {vocabRows}
-        </tbody>
+        </TableBody>
       </Table>
+     </TableContainer>
     </div>
   )
 }
@@ -64,10 +83,10 @@ function PhonemePicker(props){
 function ParameterReport(props){
   let conlangParams = props.conlangParams
   const paramsList = Object.entries(props.conlangParams).map(([param, setting]) => {
-          return(<li key={param}>{param}: {setting === true || setting === false ? setting.toString() : setting}</li>)
+          return(<ListItem key={param}>{param}: {setting === true || setting === false ? setting.toString() : setting}</ListItem>)
    })
   return(
-    <ul className="paramsList">{paramsList}</ul>
+    <List className="paramsList">{paramsList}</List>
   )
 }
 
@@ -80,44 +99,48 @@ function ParameterForm(props){
     let parameterSettings = parameter['setting']
     let parameterDisplayName = parameter['display']
     if (parameterSettings.includes("number")){
-      return(<Form.Group controlId={parameterName}>
-               <Form.Label>{parameterDisplayName}</Form.Label>
-               <Form.Control type="number" onChange={props.handleChange} value={conlangParams[parameterName]}/>
-             </Form.Group>
+      return(<FormGroup controlId={parameterName}>
+               <FormLabel>{parameterDisplayName}</FormLabel>
+               <Input type="number" onChange={props.handleChange(parameterName)} value={conlangParams[parameterName]}/>
+             </FormGroup>
       )
       }else if(parameterSettings.includes("bool")) {
-         return(<Form.Group controlId={parameterName}>
-                  <Form.Check 
+         return(<FormGroup controlId={parameterName}>
+                  <FormControlLabel
+                  control={<Checkbox
                       type="checkbox" 
-                      label={parameterDisplayName} 
-                      onChange={props.handleChange} 
-                      checked={(conlangParams[parameterName] === true)}/>
-                </Form.Group>
+                      onChange={props.handleChange(parameterName)} 
+                      checked={(conlangParams[parameterName] === true)}/>}
+	          label={parameterDisplayName}
+                   />
+                </FormGroup>
          )
       } else {
          let settingButtons = parameterSettings.map(setting => {
            return(
-             <Form.Check 
+             <FormControlLabel
+             control={<Radio 
                   type="radio" 
-                  label={setting} 
                   value={setting}
                   name={parameterName} 
-                  onChange={props.handleChange} 
-                  checked={(conlangParams[parameterName] === setting)}/>
+                  onChange={props.handleChange(parameterName)} 
+                  checked={(conlangParams[parameterName] === setting)}/>}
+                label={setting}
+             />
            )
          })
          return(
-           <Form.Group controlId={parameterName}>
-             <Form.Label>{parameterDisplayName}</Form.Label>
+           <RadioGroup controlId={parameterName}>
+             <FormLabel>{parameterDisplayName}</FormLabel>
              {settingButtons}
-           </Form.Group>
+           </RadioGroup>
          )}
     })
     return(
-      <Form className="conlangParams" onSubmit={props.handleSubmit}>
+      <FormControl className="conlangParams" onSubmit={props.handleSubmit}>
         {paramsMenu}
-        <Button type="submit">Update</Button>
-      </Form>
+        <Button className="updateButton"  onClick={props.handleSubmit}>Update</Button>
+      </FormControl>
     )
 }
 
@@ -172,14 +195,15 @@ function App(props){
     handleGetLexicon()
   }
 
-  const handleChange = (e) => {
+  const handleChange = name => (e) => {
     const {id, value, type} = e.target
+    console.log(name, id, value, type)
     if (type === "checkbox") {
-      setConlangParams((prevParams) => {return {...prevParams,[id]:!prevParams[id]}})
+      setConlangParams((prevParams) => {return {...prevParams,[name]:!prevParams[name]}})
     } else if (type === "radio") {
-       setConlangParams((prevParams) => {return {...prevParams, [id]:value}})
+       setConlangParams((prevParams) => {return {...prevParams, [name]:value}})
     } else {
-      setConlangParams((prevParams) => {return {...prevParams, [id]:value}})
+      setConlangParams((prevParams) => {return {...prevParams, [name]:value}})
     }
  }
 
@@ -214,6 +238,7 @@ function App(props){
 
   //console.log(parameters)
   return(
+    <Layout>
     <div className="container">
       <div className="topArea">
         <div className="titleArea">
@@ -224,8 +249,8 @@ function App(props){
       </div>
       <div className="parameterContainer">
         <h2>Language settings</h2>
-        <Button className='randomButton' onClick={randomParams}>Random settings</Button>
-        <Button onClick={clearParams}>Clear settings</Button>
+        <Button  className='randomButton' onClick={randomParams}>Random settings</Button>
+        <Button  className='clearButton' onClick={clearParams}>Clear settings</Button>
         
         {Object.keys(conlangParams).length === 0 ? <p>No params</p> : 
            <div className="parameterDiv">
@@ -250,6 +275,7 @@ function App(props){
         <VocabTable vocab={vocab}/>
       }
     </div>  
+   </Layout>
 )
 }
 

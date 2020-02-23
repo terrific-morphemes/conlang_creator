@@ -7,10 +7,19 @@ body {
   display: flex;
   flex-direction: row;
 }
+
 .randomButton{
-  color: green;
-  margin: 0rem 1rem 1rem 1rem;
+  margin: 1rem 1rem 1rem 1rem;
 }
+
+.clearButton{
+  margin: 1rem 1rem 1rem 1rem;
+}
+
+.updateButton{
+  margin: 1rem 1rem 1rem 1rem;
+}
+
 .reportDiv, .formDiv{
   width:50%;
 }

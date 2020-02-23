@@ -14,12 +14,12 @@ from .utils import VOCAB_FNAME
 
 @csrf_exempt
 def build_lexicon(request):
-    data = json.loads(request.body)
+    data = json.loads(request.body)['conlangParams']
     print(data)
     onsets = data.get('onsets', SAMPLE_ONSETS)
     nuclei = data.get('nuclei', SAMPLE_NUCLEI)
     codas = data.get('codas', SAMPLE_CODAS)
-    max_syl_len = data.get('maxSylLen', 3)
+    max_syl_len = int(data.get('maxSylLen', 3))
     lemmata = create_vocab(VOCAB_FNAME, onsets, nuclei, codas, max_syl_len)
     return JsonResponse({'lemmata':lemmata})
 
