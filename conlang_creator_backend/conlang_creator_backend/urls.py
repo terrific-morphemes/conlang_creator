@@ -21,10 +21,6 @@ from conlang import views
 
 router = routers.DefaultRouter()
 router.register(r'conlangs', views.ConlangView, 'conlang')
-router.register(r'onsets', views.OnsetPhonemeView, 'onset_phoneme')
-router.register(r'nuclei', views.NucleusPhonemeView, 'nucleus_phoneme')
-router.register(r'codas', views.CodaPhonemeView, 'coda_phoneme')
-router.register(r'lemmata', views.LemmaView, 'lemma')
 
 
 urlpatterns = [

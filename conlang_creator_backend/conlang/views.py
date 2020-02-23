@@ -1,15 +1,27 @@
+import json
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 from django.urls import reverse
 from rest_framework import viewsets
-from .serializers import ConlangSerializer, LemmaSerializer
-from .serializers import OnsetPhonemeSerializer, NucleusPhonemeSerializer, CodaPhonemeSerializer
+from .serializers import ConlangSerializer
 from django.views.generic import ListView, DetailView
-from .models import Conlang, OnsetPhoneme, NucleusPhoneme, CodaPhoneme
-from .models import Lemma
-from .forms import ConlangForm
-from .utils import create_vocab
+from django.views.decorators.csrf import csrf_exempt
+from .models import Conlang
+from .utils import create_vocab, SAMPLE_ONSETS, SAMPLE_NUCLEI, SAMPLE_CODAS
+from .utils import VOCAB_FNAME
 # Create your views here.
 
+
+@csrf_exempt
+def build_lexicon(request):
+    data = json.loads(request.body)
+    print(data)
+    onsets = data.get('onsets', SAMPLE_ONSETS)
+    nuclei = data.get('nuclei', SAMPLE_NUCLEI)
+    codas = data.get('codas', SAMPLE_CODAS)
+    max_syl_len = data.get('maxSylLen', 3)
+    lemmata = create_vocab(VOCAB_FNAME, onsets, nuclei, codas, max_syl_len)
+    return JsonResponse({'lemmata':lemmata})
 
 def conlang_new(request):
     """Create a new conlang
@@ -41,48 +53,8 @@ class ConlangDetail(DetailView):
         return context
 
 
-class OnsetPhonemeList(ListView):
-    model = OnsetPhoneme
-    template_name = "conlang/onset_phoneme_list.html"
-
-
-class NucleusPhonemeList(ListView):
-    model = NucleusPhoneme
-    template_name = "conlang/nucleus_phoneme_list.html"
-
-
-class CodaPhonemeList(ListView):
-    model = CodaPhoneme
-    template_name = "conlang/coda_phoneme_list.html"
-
-
-class LemmaList(ListView):
-    model = Lemma
-    template_name = "conlang/lemma_list.html"
-
-
 class ConlangView(viewsets.ModelViewSet):
     serializer_class = ConlangSerializer
     queryset = Conlang.objects.all()
-
-
-class OnsetPhonemeView(viewsets.ModelViewSet):
-    serializer_class = OnsetPhonemeSerializer
-    queryset = OnsetPhoneme.objects.all()
-
-
-class NucleusPhonemeView(viewsets.ModelViewSet):
-    serializer_class = NucleusPhonemeSerializer
-    queryset = NucleusPhoneme.objects.all()
-
-
-class CodaPhonemeView(viewsets.ModelViewSet):
-    serializer_class = CodaPhonemeSerializer
-    queryset = CodaPhoneme.objects.all()
-
-
-class LemmaView(viewsets.ModelViewSet):
-    serializer_class = LemmaSerializer
-    queryset = Lemma.objects.all()
 
 

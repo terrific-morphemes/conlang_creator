@@ -17,3 +17,4 @@ coverage/
 conlang-creator/dist/
 .cache/
 *.~lock*
+.env

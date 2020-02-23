@@ -79,12 +79,11 @@ WSGI_APPLICATION = 'conlang_creator_backend.wsgi.application'
 
 DATABASES = {
     'default':{
-      'ENGINE':'django.db.backends.postgresql',
+      'ENGINE':'django.db.backends.postgresql_psycopg2',
       'NAME':'conlang',
+      'PASSWORD':os.environ.get('PASSWORD'),
       'USER':'linguist',
-      'PASSWORD':'',
       'HOST':'localhost',
-      'PORT':'',
     }
 }
 
@@ -128,5 +127,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CORS_ORIGIN_WHITELIST = (
-        'http://localhost:3000',
+        'http://localhost:1234',
 )

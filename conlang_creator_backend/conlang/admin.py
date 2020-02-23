@@ -1,12 +1,10 @@
 from django.contrib import admin
-from .models import Conlang, Lemma
-from .models import OnsetPhoneme, NucleusPhoneme, CodaPhoneme
+from .models import Conlang
 
 # Register your models here.
 
 class ConlangAdmin(admin.ModelAdmin):
     list_display = ('name',
-            'completed', 
             'word_order',
             'fusion_level',
             'exponence_level',
@@ -46,7 +44,3 @@ class LemmaAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Conlang, ConlangAdmin)
-admin.site.register(OnsetPhoneme, OnsetPhonemeAdmin)
-admin.site.register(NucleusPhoneme, NucleusPhonemeAdmin)
-admin.site.register(CodaPhoneme, CodaPhonemeAdmin)
-admin.site.register(Lemma, LemmaAdmin)

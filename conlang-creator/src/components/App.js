@@ -14,15 +14,49 @@ import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import Switch from '@material-ui/core/Switch'
+import axios from 'axios'
 import logo from '../resources/logo.svg';
 import parameters from '../resources/parameters.json'
 import '../styles/App.css';
+import Table from 'react-bootstrap/Table'
 
 const useStyles = makeStyles(theme=> ({
   formControl: {
     margin: theme.spacing(1),
     minWidth:120,
   }}))
+
+
+function VocabTable(props){
+  const vocabRows = props.vocab.map(word => {
+    return(
+      <tr>
+        <td>{word.meaning}</td>
+        <td>{word.lemma}</td>
+        <td>{word.pos}</td>
+        <td>{word.category}</td>
+      </tr>
+    )
+  })
+  return(
+    <div className="vocabTable">
+      <h4>Vocab</h4>
+      <Table>
+        <thead>
+          <tr>
+            <th>Meaning</th>
+            <th>Lemma</th>
+            <th>Part of speech</th>
+            <th>Category</th>
+          </tr>
+        </thead>
+        <tbody>
+          {vocabRows}
+        </tbody>
+      </Table>
+    </div>
+  )
+}
 
 function PhonemePicker(props){
 }
@@ -119,6 +153,7 @@ function ParameterPicker(props){
 
 function App(props){
   const [conlangParams, setConlangParams] = useState({})
+  const [vocab, setVocab] = useState([])
 
   const clearParams = () => {
     let emptyParams = {}
@@ -134,6 +169,7 @@ function App(props){
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    handleGetLexicon()
   }
 
   const handleChange = (e) => {
@@ -164,6 +200,16 @@ function App(props){
        let randomChoice = options[Math.floor(Math.random() * options.length)]
        setConlangParams(prevParams=>{return{...prevParams, [parameterName]:randomChoice}})
     })
+  }
+
+  const handleGetLexicon = (e) => {
+    const data = {
+      conlangParams: conlangParams
+    }
+    axios.post('http://localhost:8000/conlang/lexicon/', data).then(resp => {
+      console.log(resp.data)
+      setVocab(resp.data['lemmata'])
+    }).catch(err => {console.log(err)})
   }
 
   //console.log(parameters)
@@ -200,6 +246,9 @@ function App(props){
       </div>
       <div className="phonologyContainer">
       </div>
+      { vocab.length === 0 ? "" :
+        <VocabTable vocab={vocab}/>
+      }
     </div>  
 )
 }

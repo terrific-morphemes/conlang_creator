@@ -2,7 +2,7 @@ import random
 import csv
 from pathlib import Path
 
-VOCAB_FNAME = Path("./utils/vocab_list.csv")
+VOCAB_FNAME = Path("/home/user/Work/conlang_creator/conlang_creator_backend/conlang/resources/lexicon.csv")
 SAMPLE_ONSETS = [
         'p','t','k',
         'b','d','g',
@@ -45,14 +45,15 @@ def load_vocab(vocab_fname):
         for row in reader:
             meaning = row['meaning']
             pos = row['pos']
-            words.append((meaning, pos))
+            category = row['category']
+            words.append((meaning, pos, category))
     return words
 
 def create_vocab(vocab_fname, onsets, nuclei, codas, max_syl_len):
     lemmata = list()
     used_roots = set()
     words = load_vocab(vocab_fname)
-    for meaning, pos in words:
+    for meaning, pos, category in words:
         is_ok = False
         # TODO: prevent possibility of endless loop
         while not is_ok:
@@ -67,16 +68,16 @@ def create_vocab(vocab_fname, onsets, nuclei, codas, max_syl_len):
                     is_ok = True
         lemma = {
             "meaning":meaning,
-            "root":root,
+            "lemma":root,
             "pos":pos,
+            "category":category,
         }
         lemmata.append(lemma)
         used_roots.add(root)
     return lemmata
 
 
-
 if __name__ == "__main__":
     lemmata = create_vocab(VOCAB_FNAME, SAMPLE_ONSETS, SAMPLE_NUCLEI, SAMPLE_CODAS, max_syl_len=2)
     for lemma in lemmata:
-        print("{}: {} ({})".format(lemma['root'], lemma['meaning'], lemma['pos']))
+        print("{}: {} ({})".format(lemma['lemma'], lemma['meaning'], lemma['pos'], lemma['category']))
