@@ -37,10 +37,10 @@ function ParameterPicker(props){
           {setting}
         </Dropdown.Item>
       )})
-    return (<DropdownButton title={parameterDisplayName}>{settingButtons}</DropdownButton>)
+    return (<DropdownButton className="parameterSetting" title={parameterDisplayName}>{settingButtons}</DropdownButton>)
     })
     return(
-      <div>
+      <div className="container">
         {paramsMenu}
       </div>
     )
@@ -63,9 +63,17 @@ function App(props){
 
   console.log(parameters)
   return(
-    <ParameterPicker wordOrder={wordOrder} fusionLevel={fusionLevel} flexivityLevel={flexivityLevel} exponenceLevel={exponenceLevel} parameters={parameters['parameters']}/>
-  )
-
+    <div className="container">
+      <div className="topArea">
+        <div className="titleArea">
+          <h1 class="title">Conlang Creator</h1>
+          <p class="subtitle">construct a language, just for fun</p>
+        </div>
+        <div className="topNav"></div>
+      </div>
+      <ParameterPicker parameters={parameters['parameters']}/>
+    </div>  
+)
 }
 
 export default App;

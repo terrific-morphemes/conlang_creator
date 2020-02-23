@@ -15,3 +15,5 @@ coverage/
 *.swo
 *.swp
 conlang-creator/dist/
+.cache/
+*.~lock*

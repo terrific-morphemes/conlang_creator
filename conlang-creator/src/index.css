@@ -1,0 +1,16 @@
+body {
+  margin: 0;
+  display: flex;
+}
+
+.topArea{
+width:1000px;
+}
+
+.titleArea{
+  text-align: center;
+}
+
+.parameterSetting {
+  margin: 0rem 0rem 1rem 0rem;
+}
