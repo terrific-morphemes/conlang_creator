@@ -6,7 +6,7 @@ morphology.csv
 morpheme category
 
 parameters.csv
-attribute category setting
+attribute display category setting
 
 phonology.csv
 xsampa ipa description initial medial final
@@ -28,7 +28,7 @@ def process_phonology(phonology_csv):
     with phonology_csv.open() as source:
         reader = csv.DictReader(source)
         for row in reader:
-            morpheme = {
+            phoneme = {
                 'xsampa':row['xsampa'],
                 'ipa':row['ipa'],
                 'description':row['description'],
@@ -43,8 +43,9 @@ def process_parameters(parameter_csv):
         for row in reader:
             parameter = {
                 'attribute':row['attribute'],
+                'display':row['display'],
                 'category':row['category'],
-                'setting':row['setting']
+                'setting':row['setting'].split(',')
             }
             parameters.append(parameter)
         return parameters
